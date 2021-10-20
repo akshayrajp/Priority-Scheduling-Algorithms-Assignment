@@ -22,7 +22,7 @@ struct process_details *sort_by_arrival_time(struct process_details *processes, 
     return processes;
 }
 
-void print_results(struct process_details *ppsq_results, struct process_details *ppsa_results, int size)
+void print_results(struct process_details *ppsq_results, struct process_details *ppsa_results, struct process_details *rrsq_results, int size)
 {
     for (int i = 0; i < size; i++)
     {
@@ -39,10 +39,10 @@ void print_results(struct process_details *ppsq_results, struct process_details 
                ppsa_results[i].ppa.waiting_time,
                ppsa_results[i].ppa.response_time);
         printf("RRS,process id '%c',%d,%d,%d,%d\n",
-               ppsq_results[i].process_id,
-               ppsq_results[i].pps.completion_time,
-               ppsq_results[i].pps.turnaround_time,
-               ppsq_results[i].pps.waiting_time,
-               ppsq_results[i].pps.response_time);
+               rrsq_results[i].process_id,
+               rrsq_results[i].rrs.completion_time,
+               rrsq_results[i].rrs.turnaround_time,
+               rrsq_results[i].rrs.waiting_time,
+               rrsq_results[i].rrs.response_time);
     }
 }

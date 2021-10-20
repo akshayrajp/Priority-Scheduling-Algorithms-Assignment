@@ -65,16 +65,32 @@ struct process_details *preemptive_process_scheduling_quantum_or_aging(struct pr
                     processes[i].is_active = false;
 
                     // perform necessary calculations for the finished process
-                    processes[i].pps.completion_time = time_counter;
+                    if (strcmp(type, TYPE_QUANTUM) == 0)
+                    {
+                        processes[i].pps.completion_time = time_counter;
 
-                    processes[i].pps.turnaround_time = time_counter -
-                                                       processes[i].arrival_time;
+                        processes[i].pps.turnaround_time = time_counter -
+                                                           processes[i].arrival_time;
 
-                    processes[i].pps.waiting_time = processes[i].pps.turnaround_time -
-                                                    processes[i].burst_length_copy;
+                        processes[i].pps.waiting_time = processes[i].pps.turnaround_time -
+                                                        processes[i].burst_length_copy;
 
-                    processes[i].pps.response_time = processes[i].first_insertion -
-                                                     processes[i].arrival_time;
+                        processes[i].pps.response_time = processes[i].first_insertion -
+                                                         processes[i].arrival_time;
+                    }
+                    else if (strcmp(type, TYPE_AGING) == 0)
+                    {
+                        processes[i].ppa.completion_time = time_counter;
+
+                        processes[i].ppa.turnaround_time = time_counter -
+                                                           processes[i].arrival_time;
+
+                        processes[i].ppa.waiting_time = processes[i].ppa.turnaround_time -
+                                                        processes[i].burst_length_copy;
+
+                        processes[i].ppa.response_time = processes[i].first_insertion -
+                                                         processes[i].arrival_time;
+                    }
                 }
                 // if the process has not finished, pre-empt it
                 // and give another process a chance

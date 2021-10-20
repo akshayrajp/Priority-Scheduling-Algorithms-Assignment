@@ -23,6 +23,7 @@ struct process_details
     bool is_active;
     bool is_waiting;
     bool is_completed;
+    int size;
 
     // results for the process:
     struct result pps;
