@@ -8,7 +8,6 @@ struct process_details *queue_operation(struct process_details *ready_queue, int
 {
     if (strcmp(operation, OPERATION_DEQUEUE) == 0)
     {
-        printf("dequeue\n");
         struct process_details *new_ready_queue = (struct process_details *)malloc(sizeof(struct process_details) * (rqcount - 1));
         for (int i = TOP + 1; i < rqcount - 1; i++)
             new_ready_queue[i - 1] = ready_queue[i];
@@ -16,10 +15,7 @@ struct process_details *queue_operation(struct process_details *ready_queue, int
     }
     else if (strcmp(operation, OPERATION_ENQUEUE) == 0)
     {
-        printf("enqueue\n");
-        printf("rqcount : %d\n", rqcount);
         struct process_details *new_ready_queue = (struct process_details *)malloc(sizeof(struct process_details) * rqcount);
-        printf("here\n");
         new_ready_queue[rqcount - 1] = ready_queue[TOP];
         for (int i = TOP + 1; i < rqcount; i++)
             new_ready_queue[i - 1] = ready_queue[i];
@@ -58,17 +54,10 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
             for (int j = 0; j < size; j++)
                 if (processes[j].process_id == pqueue[i])
                 {
-                    printf("\nadding to ready_queue\n");
-                    ready_queue = realloc(ready_queue, ++rqcount);
+                    ready_queue = realloc(ready_queue, sizeof(struct process_details) * (++rqcount));
                     ready_queue[rqcount - 1] = processes[j];
                     break;
                 }
-        }
-        printf("\npqueue %s\n", pqueue);
-        if (pqueue)
-        {
-            pqueue = NULL;
-            free(pqueue);
         }
 
         ready_queue[TOP].is_active = true;
@@ -99,7 +88,6 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
 
             // Delete this process from ready_queue now
             ready_queue = queue_operation(ready_queue, rqcount, OPERATION_DEQUEUE);
-            rqcount -= 1;
         }
         // else if a process has not finished, then add it to the back of the queue
         else
@@ -107,11 +95,6 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
 
         if (done_count == size)
         {
-            if (ready_queue)
-            {
-                ready_queue = NULL;
-                free(ready_queue);
-            }
             // free(ready_queue);
             return results;
         }
