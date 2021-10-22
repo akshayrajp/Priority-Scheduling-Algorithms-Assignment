@@ -1,8 +1,12 @@
 CC = gcc
 CFLAGS =
 LDFLAGS = 
-OBJFILES = helpers.o main.o ppsqa.o read_csv.o rrs.o 
-TARGET = a.out
+OBJFILES = helpers.o main.o ppsqa.o read_csv.o rrs.o
+ifeq ($(OS),Windows_NT) 
+    TARGET := a.exe
+else
+    TARGET := a.out
+endif
 
 all: $(TARGET)
 $(TARGET): $(OBJFILES)
