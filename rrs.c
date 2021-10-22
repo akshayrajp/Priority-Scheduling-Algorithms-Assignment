@@ -4,23 +4,24 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-struct process_details *queue_operation(struct process_details *ready_queue, int rqcount, char *operation)
+struct process_details *queue_operation(struct process_details *ready_queue, int count, char *operation)
 {
-    if (strcmp(operation, OPERATION_DEQUEUE) == 0)
-    {
-        struct process_details *new_ready_queue = (struct process_details *)malloc(sizeof(struct process_details) * (rqcount - 1));
-        for (int i = FRONT + 1; i < rqcount; i++)
-            new_ready_queue[i - 1] = ready_queue[i];
-        return new_ready_queue;
-    }
-    else if (strcmp(operation, OPERATION_ENQUEUE) == 0)
-    {
-        struct process_details *new_ready_queue = (struct process_details *)malloc(sizeof(struct process_details) * rqcount);
-        new_ready_queue[rqcount - 1] = ready_queue[FRONT];
-        for (int i = FRONT + 1; i < rqcount; i++)
-            new_ready_queue[i - 1] = ready_queue[i];
-        return new_ready_queue;
-    }
+    int i,
+        new_count = (strcmp(operation, OPERATION_DEQUEUE) == 0) ? count - 1 : count;
+
+    struct process_details *new_ready_queue = (struct process_details *)malloc(sizeof(struct process_details) * new_count);
+
+    if (strcmp(operation, OPERATION_ENQUEUE) == 0)
+        new_ready_queue[count - 1] = ready_queue[FRONT];
+
+    for (i = FRONT + 1; i < count; i++)
+        new_ready_queue[i - 1] = ready_queue[i];
+
+    ready_queue = (struct process_details *)realloc(ready_queue, sizeof(struct process_details) * new_count);
+    for (i = 0; i < new_count; i++)
+        ready_queue[i] = new_ready_queue[i];
+
+    return ready_queue;
 }
 struct process_details *round_robin_scheduling_quantum(struct process_details *processes, int size)
 {
@@ -100,7 +101,7 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
         ready_queue[FRONT].burst_length = MAX(0, ready_queue[FRONT].burst_length - QUANTUM);
 
         // if the process has finished executing, then calculate the required parameters,
-        // mark it as completed, and remove it from the process_queue
+        // mark it as completed, and remove it from the process_queue (dequeue)
         if (ready_queue[FRONT].burst_length == 0)
         {
             ready_queue[FRONT].is_completed = true;
@@ -126,27 +127,13 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
                 }
 
             done_count += 1;
-            new_ready_queue = (struct process_details *)realloc(new_ready_queue, sizeof(struct process_details) * (count - 1));
-            for (i = FRONT + 1; i < count; i++)
-                new_ready_queue[i - 1] = ready_queue[i];
-            ready_queue = (struct process_details *)realloc(ready_queue, sizeof(struct process_details) * (count - 1));
+            ready_queue = queue_operation(ready_queue, count, OPERATION_DEQUEUE);
             count -= 1;
-
-            for (i = 0; i < count; i++)
-                ready_queue[i] = new_ready_queue[i];
         }
         else
         {
-            // However, if the process has not finished it's execution, then add it to the back of the queue
-            new_ready_queue = (struct process_details *)realloc(new_ready_queue, sizeof(struct process_details) * count);
-            new_ready_queue[count - 1] = ready_queue[FRONT];
-            for (i = FRONT + 1; i < count; i++)
-                new_ready_queue[i - 1] = ready_queue[i];
-
-            ready_queue = (struct process_details *)realloc(ready_queue, sizeof(struct process_details) * count);
-
-            for (i = 0; i < count; i++)
-                ready_queue[i] = new_ready_queue[i];
+            // However, if the process has not finished it's execution, then add it to the back of the queue (enqueue)
+            ready_queue = queue_operation(ready_queue, count, OPERATION_ENQUEUE);
         }
         if (done_count == size)
         {
