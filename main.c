@@ -30,6 +30,10 @@ int main()
     struct process_details *ppsq_results = preemptive_process_scheduling_quantum_or_aging(ppsq_processes_copy, line_count, TYPE_QUANTUM);
     struct process_details *ppsa_results = preemptive_process_scheduling_quantum_or_aging(ppsa_processes_copy, line_count, TYPE_AGING);
     struct process_details *rrsq_results = round_robin_scheduling_quantum(rrsq_processes_copy, line_count);
-    print_results(ppsq_results, ppsa_results, rrsq_results, line_count);
+    print_results(processes,
+                  ppsq_results,
+                  ppsa_results,
+                  rrsq_results,
+                  line_count);
     return 0;
 }

@@ -1,9 +1,9 @@
 #ifndef COMMON_MACROS
 #define COMMON_MACROS
 
-#define QUANTUM 5
+#define QUANTUM 3
 #define AGING_PERIOD 1
-#define TOP 0
+#define FRONT 0
 #define INPUT_FILE "input.csv"
 
 #define MAX(x, y) (((x) >= (y)) ? (x) : (y))
