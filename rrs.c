@@ -140,7 +140,7 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
             free(ready_queue);
             free(new_ready_queue);
             free(temp_ready_queue);
-            return sort_by_arrival_time(processes, size);
+            return processes;
         }
     }
 }
