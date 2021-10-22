@@ -62,19 +62,3 @@ void print_results(struct process_details *processes,
         }
     }
 }
-
-void print_contents(struct process_details *processes, int size)
-{
-    // printf("Process ID\tCompletion Time\tTurnaround Time\tWaiting Time\tResponse Time\n\n");
-    // for (int i = 0; i < size - 1; i++)
-    // {
-    //     printf("%c\t\t%d\t\t%d\t\t%d\t\t%d\n", processes[i].process_id,
-    //            processes[i].rrs.completion_time,
-    //            processes[i].rrs.turnaround_time,
-    //            processes[i].rrs.waiting_time,
-    //            processes[i].rrs.response_time);
-    // }
-    for (int i = 0; i < size; i++)
-        printf("%c", processes[i].process_id);
-    puts("");
-}
