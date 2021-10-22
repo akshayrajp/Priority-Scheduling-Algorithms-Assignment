@@ -36,7 +36,7 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
     struct process_details *temp_ready_queue = (struct process_details *)malloc(sizeof(struct process_details) * FRONT);
     struct process_details *new_ready_queue = (struct process_details *)malloc(sizeof(struct process_details) * FRONT);
 
-    // set is_completed of all processes to false and is_new to true
+    // set is_completed of all processes to false, is_new to true and first_insertion to -1
     for (i = 0; i < size; i++)
     {
         processes[i].is_completed = false;
@@ -50,7 +50,7 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
     {
         pcount = 0;
         char *p_ids = (char *)malloc(sizeof(char) * (pcount + 1));
-        for (i = size; i >= 0; i--)
+        for (i = 0; i < size; i++)
         {
             if (!processes[i].is_completed &&
                 processes[i].arrival_time <= time_counter &&
@@ -94,10 +94,10 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
 
         ready_queue[FRONT].is_active = true;
         ready_queue[FRONT].is_waiting = false;
-        time_counter += MIN(QUANTUM, ready_queue[FRONT].burst_length);
-        ready_queue[FRONT].burst_length = MAX(0, ready_queue[FRONT].burst_length - QUANTUM);
         if (ready_queue[FRONT].first_insertion == -1)
             ready_queue[FRONT].first_insertion = time_counter;
+        time_counter += MIN(QUANTUM, ready_queue[FRONT].burst_length);
+        ready_queue[FRONT].burst_length = MAX(0, ready_queue[FRONT].burst_length - QUANTUM);
 
         // if the process has finished executing, then calculate the required parameters,
         // mark it as completed, and remove it from the process_queue
@@ -118,9 +118,6 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
             ready_queue[FRONT].rrs.response_time = ready_queue[FRONT].first_insertion -
                                                    ready_queue[FRONT].arrival_time;
 
-            printf("not done\n");
-            print_contents(ready_queue, count);
-
             for (i = 0; i < size; i++)
                 if (ready_queue[FRONT].process_id == processes[i].process_id)
                 {
@@ -137,14 +134,9 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
 
             for (i = 0; i < count; i++)
                 ready_queue[i] = new_ready_queue[i];
-
-            printf("done\n");
-            print_contents(ready_queue, count);
         }
         else
         {
-            printf("not done\n");
-            print_contents(ready_queue, count);
             // However, if the process has not finished it's execution, then add it to the back of the queue
             new_ready_queue = (struct process_details *)realloc(new_ready_queue, sizeof(struct process_details) * count);
             new_ready_queue[count - 1] = ready_queue[FRONT];
@@ -155,8 +147,6 @@ struct process_details *round_robin_scheduling_quantum(struct process_details *p
 
             for (i = 0; i < count; i++)
                 ready_queue[i] = new_ready_queue[i];
-            printf("reordered\n");
-            print_contents(ready_queue, count);
         }
         if (done_count == size)
         {

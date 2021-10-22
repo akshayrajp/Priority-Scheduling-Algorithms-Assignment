@@ -10,6 +10,14 @@ struct process_details *preemptive_process_scheduling_quantum_or_aging(struct pr
     bool done_flag = false;
     // Sort the procceses by arrival_time
     processes = sort_by_arrival_time(processes, size);
+
+    // Set initial states
+    for (i = 0; i < size; i++)
+    {
+        processes[i].is_completed = false;
+        processes[i].first_insertion = -1;
+    }
+
     while (!done_flag)
     {
         max_priority = 0;

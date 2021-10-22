@@ -1,7 +1,7 @@
 #ifndef COMMON_MACROS
 #define COMMON_MACROS
 
-#define QUANTUM 3
+#define QUANTUM 5
 #define AGING_PERIOD 1
 #define FRONT 0
 #define INPUT_FILE "input.csv"
